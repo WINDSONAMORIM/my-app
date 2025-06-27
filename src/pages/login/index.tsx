@@ -2,9 +2,12 @@ import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
 import logo from "../../assets/icon_transparent-removebg-preview.png";
 import fundo from "../../assets/fundo2.jpg";
 import { useState } from "react";
+import {useNavigate} from "react-router-dom"
 
 export const Login = () => {
+  const navigate =  useNavigate()
   const [moveScroll, setMoveScroll] = useState(false);
+
 
   return (
     <Box
@@ -51,7 +54,7 @@ export const Login = () => {
             borderRadius: "10px",
           }}
         >
-          <Button sx={{ width: "40%", height: "100%" }} variant="contained">
+          <Button onClick={() => navigate("/dashboard")} sx={{ width: "40%", height: "100%" }} variant="contained">
             Entrar
           </Button>
           <Button sx={{ width: "40%", height: "100%" }} variant="contained">
