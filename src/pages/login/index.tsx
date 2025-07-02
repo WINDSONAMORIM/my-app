@@ -1,41 +1,89 @@
-import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import PersonIcon from "@mui/icons-material/Person";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+// import VisibilityIcon from "@mui/icons-material/Visibility";
+import React from "react";
 import logo from "../../assets/icon_transparent-removebg-preview.png";
 import fundo from "../../assets/fundo2.jpg";
-import { useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import { ping } from "../../services/connection";
+import { login } from "../../services/apiUserService";
 
 export const Login = () => {
-  const navigate =  useNavigate()
+  // const navigate = useNavigate();
   const [moveScroll, setMoveScroll] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorAlert, setErrorAlert] = useState("");
+  const [errorAlertTitle, setErrorAlertTitle] = useState("");
 
+  useEffect(() => {
+    ping().then(() => console.log("Ping successful"));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const data = await login(username, password);
+      console.log("Login successful:", data);
+      if (!data.success) {
+        setErrorAlert(data.data || "Login failed");
+        setErrorAlertTitle(data.mensage || "Login failed");
+        return;
+      }
+      // Assuming the response contains a success property
+      // sessionStorage.setItem("token", data.token);
+      // connection.defaults.headers.common
+      // if (data) {
+      //   console.error("Login failed: No data returned");
+      //   return;
+      // }
+      // navigate("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
-    <Box
-      className="container"
+    <Container
       sx={{
         backgroundImage: `url(${fundo})`,
-        width: "100vw",
-        height: "100vh",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        height: "100%",
+        width: "100%",
+        minHeight: "100vh",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         overflow: "hidden",
       }}
+      maxWidth="xl"
+      disableGutters
     >
       <Box
         className="main"
-        width={"30vw"}
+        width={"35vw"}
         height={"45vh"}
         display={"flex"}
-        justifyContent={"center"}
+        flexDirection={"column"}
         alignItems={"center"}
-        overflow={"hidden"}
         sx={{
           backgroundColor: "rgba(255, 255, 255, 0.3)",
           backdropFilter: "blur(10px)",
-          borderRadius: "20px 0 20px 0",
+          borderRadius: "10px",
           boxShadow: 20,
         }}
       >
@@ -44,106 +92,156 @@ export const Login = () => {
           display="flex"
           justifyContent="space-around"
           alignItems="center"
-          position={"absolute"}
-          width={"90%"}
-          padding={"10px 0px"}
-          bottom={"20px"}
+          position={"relative"}
+          width={"99%"}
+          margin={"5px"}
+          padding={"5px px"}
           sx={{
             backgroundImage:
               "linear-gradient(to top, #30cfd0 0%, #330867 100%);",
             borderRadius: "10px",
           }}
         >
-          <Button onClick={() => navigate("/dashboard")} sx={{ width: "40%", height: "100%" }} variant="contained">
-            Entrar
-          </Button>
-          <Button sx={{ width: "40%", height: "100%" }} variant="contained">
-            Cadastar
-          </Button>
+          <Typography
+            sx={{
+              cursor: "pointer",
+              textTransform: "uppercase",
+              fontWeight: 700,
+            }}
+            fontSize={20}
+            color="#ffffff"
+            onClick={() => setMoveScroll((prev) => !prev)}
+          >
+            Acessar
+          </Typography>
+          <Typography
+            sx={{
+              cursor: "pointer",
+              textTransform: "uppercase",
+              fontWeight: 700,
+            }}
+            fontSize={20}
+            color="#ffffff"
+            onClick={() => setMoveScroll((prev) => !prev)}
+          >
+            Cadastrar
+          </Typography>
+
           <Box
             className="navScroll"
-            onClick={() => setMoveScroll((prev) => !prev)}
             position="absolute"
-            border="1px solid #ffffff"
             width="50%"
             alignItems={"center"}
             justifyContent={"center"}
-            color={"white"}
-            height="110%"
-            borderRadius="13px"
-            display="flex"
-            flexDirection="row"
+            height={"100%"}
+            borderRadius="10px"
             left={moveScroll ? 0 : "50%"}
             sx={{
               backgroundImage:
                 "linear-gradient(to top, #330867  0%,#30cfd0  100%);",
               transition: "1s",
             }}
+          ></Box>
+        </Box>
+
+        <Avatar src={logo} alt="Logo" sx={{ width: 150, height: 150 }} />
+
+        <Box display={"flex"} flexDirection="row" width="100%">
+          <Box
+            className="form"
+            component={"form"}
+            width={"100%"}
+            minWidth={"100%"}
+            id="formCadastro"
+            padding="0 30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            sx={{
+              transform: moveScroll ? "translateX(100%)" : "translateX(0%)",
+              opacity: moveScroll ? 0 : 1,
+              transition: "1s",
+              gap: "16px",
+            }}
           >
-            <Typography textTransform={"uppercase"}>
-              {moveScroll ? "Entrar" : "Cadastrar"}
+            <Typography textAlign={"center"}>
+              Para acessar o sistema, é necessário realizar o cadastro
+              juntamente a secretaria preenchendo um formulário que pode ser
+              baixado clicando em Download.
             </Typography>
+            <Button startIcon={<CloudDownloadIcon />}  sx={{ width: "40%", height: "100%" }} variant="contained">
+              Download
+            </Button>
+          </Box>
+
+          <Box
+            className="form"
+            component={"form"}
+            onSubmit={handleSubmit}
+            id="formLogin"
+            width={"100%"}
+            minWidth={"100%"}
+            padding="0 30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            sx={{
+              transform: moveScroll ? "translateX(-100%)" : "translateX(0%)",
+              opacity: moveScroll ? 1 : 0,
+              transition: "1s",
+              gap: "16px",
+            }}
+          >
+            {errorAlert && (
+              <Alert 
+                sx={{position: "absolute", width: "50%", marginBottom: "16px", zIndex: 1, textAlign: "center"}}
+                variant="filled"
+                icon={<ErrorOutlineIcon fontSize="inherit" />}
+                severity="error"
+                onClose={() => setErrorAlert("")}
+              >
+                <AlertTitle>{errorAlertTitle}</AlertTitle>
+                {errorAlert}
+              </Alert>
+            )}
+            <Box
+              sx={{ display: "flex", alignItems: "flex-end", width: "100%" }}
+            >
+              <PersonIcon style={{ marginRight: 8, color: "#000" }} />
+              <TextField
+                fullWidth
+                variant="standard"
+                label="Acesse Usuário"
+                type="text"
+                autoComplete="username"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+            </Box>
+            <Box
+              sx={{ display: "flex", alignItems: "flex-end", width: "100%" }}
+            >
+              <VisibilityOffIcon style={{ marginRight: 8, color: "#000" }} />
+              <TextField
+                fullWidth
+                variant="standard"
+                label="Senha"
+                type="password"
+                autoComplete="current-password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+            </Box>
+            <Button
+              type="submit"
+              sx={{ width: "40%", height: "100%" }}
+              variant="contained"
+            >
+              Entrar
+            </Button>
           </Box>
         </Box>
-
-        <Box position={"absolute"} top={20} mb={4}>
-          <Avatar src={logo} alt="Logo" sx={{ width: 250, height: 250 }} />
-        </Box>
-
-        <Box
-          className="form"
-          width={"100%"}
-          id="formCadastro"
-          padding="0 30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="end"
-          position={"absolute"}
-          top={275}
-          left={moveScroll ? 0 : "100%"}
-          sx={{ transition: "1s", gap: "16px" }}
-        >
-          <TextField
-            fullWidth
-            variant="standard"
-            label="Cadastre Usuário"
-            type="email"
-          />
-          <TextField
-            fullWidth
-            variant="standard"
-            label="Senha"
-            type="password"
-          />
-        </Box>
-
-        <Box
-          className="form"
-          id="formLogin"
-          width={"100%"}
-          padding="0 30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="end"
-          position={"absolute"}
-          top={275}
-          left={moveScroll ? "100%" : 0}
-          sx={{ transition: "1s", gap: "16px" }}
-        >
-          <TextField
-            fullWidth
-            variant="standard"
-            label="Acesse Usuário"
-            type="email"
-          />
-          <TextField
-            fullWidth
-            variant="standard"
-            label="Senha"
-            type="password"
-          />
-        </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };

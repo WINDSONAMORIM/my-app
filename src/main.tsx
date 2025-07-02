@@ -16,7 +16,6 @@ export const Root = () => {
       <App toggleMode={toggleMode} mode={mode} />
     </ThemeProvider>
   );
-
 }
 
 createRoot(document.getElementById("root")!).render(<Root />);

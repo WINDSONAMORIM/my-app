@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Login } from "./pages/login";
 import { Dashboard } from "./pages/dashboard";
-import { ResponsiveAppBar } from "./components/appBar";
+import { AccountsPayable } from "./pages/accountsPayable";
 
 interface AppProps {
   toggleMode: () => void;
@@ -11,10 +11,10 @@ interface AppProps {
 function App({toggleMode, mode}: AppProps) {  
   return (
     <BrowserRouter>
-      <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard toggleMode={toggleMode} mode={mode}/>} />
+        <Route path="/aPagar" element={<AccountsPayable toggleMode={toggleMode} mode={mode}/>} />
       </Routes>
     </BrowserRouter>
   );

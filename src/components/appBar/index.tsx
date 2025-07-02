@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import avatarUser from "../../assets/avatar/avatarUser.png";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -23,7 +24,6 @@ interface AppBarProps {
 }
 
 export const ResponsiveAppBar = ({toggleMode, mode}: AppBarProps) => {
-//   const [mode, setMode] = React.useState(false);
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -149,7 +149,7 @@ export const ResponsiveAppBar = ({toggleMode, mode}: AppBarProps) => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={avatarUser} />
               </IconButton>
             </Tooltip>
             <Menu

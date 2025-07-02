@@ -5,12 +5,19 @@ import folha from "../../assets/Folha.png";
 
 import "./style.css";
 import { grey } from "@mui/material/colors";
-// import {ResponsiveAppBar} from "../../components/appBar";
+import {ResponsiveAppBar} from "../../components/appBar";
+import { useNavigate } from "react-router-dom";
 
-export const Dashboard = () => {
+interface DashboardProps {
+  toggleMode: () => void;
+  mode: boolean;
+}
+
+export const Dashboard = ({toggleMode, mode}: DashboardProps) => {
+  const navigate = useNavigate();
   return (
     <>
-      {/* <ResponsiveAppBar /> */}
+      <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
       <Container
         maxWidth="xl"
         disableGutters
@@ -59,6 +66,11 @@ export const Dashboard = () => {
               transform: "scale(1.3)",
               backgroundColor: "primary.dark",
             },
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            console.log("Acessando contas a pagar");
+            navigate("/aPagar"); 
           }}
         >
           <img src={apagar} />
