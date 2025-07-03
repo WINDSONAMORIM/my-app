@@ -15,7 +15,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 // import VisibilityIcon from "@mui/icons-material/Visibility";
 import React from "react";
 import logo from "../../assets/icon_transparent-removebg-preview.png";
-import fundo from "../../assets/fundo2.jpg";
+import hospital from "../../assets/background/hospital.jpg";
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { ping } from "../../services/connection";
@@ -59,7 +59,7 @@ export const Login = () => {
   return (
     <Container
       sx={{
-        backgroundImage: `url(${fundo})`,
+        backgroundImage: `url(${hospital})`,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

@@ -1,10 +1,10 @@
 import { Box, Container } from "@mui/material";
-import pagas from "../../assets/ContasPagas.png";
-import apagar from "../../assets/ContasAPagar.png";
-import folha from "../../assets/Folha.png";
+import pagas from "../../assets/buttons/ContasPagas.png";
+import apagar from "../../assets/buttons/ContasAPagar.png";
+import folha from "../../assets/buttons/Folha.png";
 
 import "./style.css";
-import { grey } from "@mui/material/colors";
+import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
 import {ResponsiveAppBar} from "../../components/appBar";
 import { useNavigate } from "react-router-dom";
 
@@ -22,13 +22,15 @@ export const Dashboard = ({toggleMode, mode}: DashboardProps) => {
         maxWidth="xl"
         disableGutters
         sx={{
-          backgroundColor: grey[300],
+          backgroundImage: `url(${backgroundDefault})`,
+          backgroundSize: "cover",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-around",
           padding: "20px",
-          height: "100vh",
           alignItems: "center",
+          overflow: "hidden",
+          minHeight: "100vh",
         }}
       >
         <Box
@@ -70,7 +72,7 @@ export const Dashboard = ({toggleMode, mode}: DashboardProps) => {
           }}
           onClick={() => {
             console.log("Acessando contas a pagar");
-            navigate("/aPagar"); 
+            navigate("/aPagar");
           }}
         >
           <img src={apagar} />

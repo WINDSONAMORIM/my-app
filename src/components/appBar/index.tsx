@@ -15,8 +15,8 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import avatarUser from "../../assets/avatar/avatarUser.png";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["Contas a Pagar", "Documentos Financeiros", "Despesas Compromissadas"];
+const settings = ["Logout"];
 
 interface AppBarProps {
   toggleMode: () => void;
@@ -48,7 +48,7 @@ export const ResponsiveAppBar = ({toggleMode, mode}: AppBarProps) => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="absolute">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton

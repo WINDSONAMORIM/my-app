@@ -5,6 +5,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState } from "react";
 import { accountsPayable } from "../../services/apiAccountsPayableService";
 import type { AccountsPayableDTO } from "../../types/accountsPayableDTO";
+import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
+
 
 interface AccountsPayableProps {
   toggleMode: () => void;
@@ -57,7 +59,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   };
 
   return (
-    <div style={{ padding: "10px" }}>
+    <div style={{ padding: "10px", backgroundImage: `url(${backgroundDefault})`, backgroundSize: "cover", minHeight: "100vh" }}>
       <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
       <Typography align="center" variant="h5" margin={2}>
         Contas a Pagar
@@ -72,7 +74,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
         right={0}
         justifyContent="space-around"
         alignItems="center"
-        sx={{ backgroundColor: "background.default", padding: "10px" }}
+        sx={{padding: "10px" }}
       >
         <Box
           sx={{
