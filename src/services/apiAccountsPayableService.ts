@@ -7,7 +7,7 @@ interface ApiResponse<T> {
     data: T
 }
 
-export const accountsPayable = async (files: File[]) => {
+export const accountsPayableService = async (files: File[]) => {
     console.log("Files to upload:", files);
     const form = new FormData();
     
@@ -21,7 +21,7 @@ export const accountsPayable = async (files: File[]) => {
                 "Content-Type": "multipart/form-data",
             },
         });
-
+        console.log(data)
         return data.data;        
     } catch (error) {
         console.error("Login failed:", error);

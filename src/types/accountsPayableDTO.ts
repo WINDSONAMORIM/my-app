@@ -1,6 +1,7 @@
 export interface AccountsPayableDTO {
-  NFDoc: string;
-  NFDocSerie: string;
-  ValorTotal: number;
-  DataEmissao: string;
+  fornecedorId: string;
+  nFDoc: string;
+  nFDocSerie: string;
+  valorTotal: number;
+  dataEmissao: string;
 }

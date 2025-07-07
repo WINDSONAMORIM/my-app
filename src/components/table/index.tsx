@@ -8,7 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import type { AccountsPayableDTO } from "../../types/accountsPayableDTO";
-import { TablePagination } from "@mui/material";
+import { TableFooter, TablePagination } from "@mui/material";
+import SyncIcon from "@mui/icons-material/Sync";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,13 +39,17 @@ interface CusttomizeTablesProps {
 }
 
 const headers = [
+  "Seq",
+  "Fornecedor",
   "NFDoc",
   "NFDocSerie",
   "ValorTotal",
   "DataEmissao",
+  "Status"
 ];
 
 export default function CustomizedTables({rows}:CusttomizeTablesProps) {
+  console.log("rows: ",rows)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -66,6 +71,16 @@ export default function CustomizedTables({rows}:CusttomizeTablesProps) {
     setPage(0);
   };
 
+  const columnWidths: Record<string, string> = {
+    Seq: "50px",
+    Fornecedor: "150px",
+    NFDoc: "100px",
+    NFDocSerie: "80px",
+    ValorTotal: "120px",
+    DataEmissao: "120px",
+    Status: "80px",
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -74,7 +89,8 @@ export default function CustomizedTables({rows}:CusttomizeTablesProps) {
             {headers.map((header, index) => (
               <StyledTableCell
                 key={index}
-                align={index === 0 ? "left" : "right"}
+                align={"left"}
+                sx={{ width: columnWidths[header] || "auto" }}
               >
                 {header}
               </StyledTableCell>
@@ -84,27 +100,32 @@ export default function CustomizedTables({rows}:CusttomizeTablesProps) {
         <TableBody>
           {paginatedRows.map((row, i) => (
             <StyledTableRow key={i}>
-              <StyledTableCell component="th" scope="row">
-                {row.NFDoc}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.NFDocSerie}</StyledTableCell>
-              <StyledTableCell align="right">{row.ValorTotal}</StyledTableCell>
-              <StyledTableCell align="right">{row.DataEmissao}</StyledTableCell>
+              <StyledTableCell align="left">{i + 1}</StyledTableCell>
+              <StyledTableCell align="left">{row.fornecedorId}</StyledTableCell>
+              <StyledTableCell align="left">{row.nFDoc}</StyledTableCell>
+              <StyledTableCell align="left">{row.nFDocSerie}</StyledTableCell>
+              <StyledTableCell align="left">{`R$ ${row.valorTotal}`}</StyledTableCell>
+              <StyledTableCell align="left">{row.dataEmissao}</StyledTableCell>
+              <StyledTableCell align="center">{<SyncIcon />}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
-        <TablePagination
-          component="div"
-          count={rows.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Linhas por página"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}-${to} de ${count !== -1 ? count : `mais que ${to}`}`
-          }
-        />
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              colSpan={headers.length}
+              count={rows.length}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage="Linhas por página"
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} de ${count !== -1 ? count : `mais que ${to}`}`
+              }
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

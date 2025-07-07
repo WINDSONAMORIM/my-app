@@ -17,13 +17,13 @@ import React from "react";
 import logo from "../../assets/icon_transparent-removebg-preview.png";
 import hospital from "../../assets/background/hospital.jpg";
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ping } from "../../services/connection";
 import { login } from "../../services/apiUserService";
 
 export const Login = () => {
-  // const navigate = useNavigate();
-  const [moveScroll, setMoveScroll] = useState(false);
+  const navigate = useNavigate();
+  const [moveScroll, setMoveScroll] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorAlert, setErrorAlert] = useState("");
@@ -37,20 +37,18 @@ export const Login = () => {
     e.preventDefault();
     try {
       const data = await login(username, password);
-      console.log("Login successful:", data);
+
       if (!data.success) {
         setErrorAlert(data.data || "Login failed");
         setErrorAlertTitle(data.mensage || "Login failed");
         return;
       }
-      // Assuming the response contains a success property
-      // sessionStorage.setItem("token", data.token);
-      // connection.defaults.headers.common
-      // if (data) {
-      //   console.error("Login failed: No data returned");
-      //   return;
-      // }
-      // navigate("/dashboard");
+      
+      console.log("Login successful:", data.data.Token);
+      sessionStorage.setItem("Token", data.data.Token);
+      
+      navigate("/dashboard");
+
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -74,7 +72,6 @@ export const Login = () => {
       disableGutters
     >
       <Box
-        className="main"
         width={"35vw"}
         height={"45vh"}
         display={"flex"}
@@ -88,7 +85,6 @@ export const Login = () => {
         }}
       >
         <Box
-          className="nav"
           display="flex"
           justifyContent="space-around"
           alignItems="center"
@@ -128,14 +124,13 @@ export const Login = () => {
           </Typography>
 
           <Box
-            className="navScroll"
             position="absolute"
             width="50%"
             alignItems={"center"}
             justifyContent={"center"}
             height={"100%"}
             borderRadius="10px"
-            left={moveScroll ? 0 : "50%"}
+            left={moveScroll ? "50%" : 0}
             sx={{
               backgroundImage:
                 "linear-gradient(to top, #330867  0%,#30cfd0  100%);",
@@ -148,7 +143,6 @@ export const Login = () => {
 
         <Box display={"flex"} flexDirection="row" width="100%">
           <Box
-            className="form"
             component={"form"}
             width={"100%"}
             minWidth={"100%"}
@@ -169,13 +163,16 @@ export const Login = () => {
               juntamente a secretaria preenchendo um formulário que pode ser
               baixado clicando em Download.
             </Typography>
-            <Button startIcon={<CloudDownloadIcon />}  sx={{ width: "40%", height: "100%" }} variant="contained">
+            <Button
+              startIcon={<CloudDownloadIcon />}
+              sx={{ width: "40%", height: "100%" }}
+              variant="contained"
+            >
               Download
             </Button>
           </Box>
 
           <Box
-            className="form"
             component={"form"}
             onSubmit={handleSubmit}
             id="formLogin"
@@ -193,8 +190,14 @@ export const Login = () => {
             }}
           >
             {errorAlert && (
-              <Alert 
-                sx={{position: "absolute", width: "50%", marginBottom: "16px", zIndex: 1, textAlign: "center"}}
+              <Alert
+                sx={{
+                  position: "absolute",
+                  width: "50%",
+                  marginBottom: "16px",
+                  zIndex: 1,
+                  textAlign: "center",
+                }}
                 variant="filled"
                 icon={<ErrorOutlineIcon fontSize="inherit" />}
                 severity="error"

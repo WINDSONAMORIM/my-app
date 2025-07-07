@@ -5,7 +5,7 @@ import folha from "../../assets/buttons/Folha.png";
 
 import "./style.css";
 import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
-import {ResponsiveAppBar} from "../../components/appBar";
+import { ResponsiveAppBar } from "../../components/appBar";
 import { useNavigate } from "react-router-dom";
 
 interface DashboardProps {
@@ -13,52 +13,80 @@ interface DashboardProps {
   mode: boolean;
 }
 
-export const Dashboard = ({toggleMode, mode}: DashboardProps) => {
+export const Dashboard = ({ toggleMode, mode }: DashboardProps) => {
   const navigate = useNavigate();
   return (
-    <>
+    <div
+      style={{
+        padding: "10px",
+        backgroundImage: `url(${backgroundDefault})`,
+        backgroundSize: "cover",
+        minHeight: "100vh",
+      }}
+    >
       <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
       <Container
         maxWidth="xl"
         disableGutters
         sx={{
-          backgroundImage: `url(${backgroundDefault})`,
-          backgroundSize: "cover",
           display: "flex",
-          flexDirection: "row",
+          alignItems: "center",
           justifyContent: "space-around",
           padding: "20px",
-          alignItems: "center",
-          overflow: "hidden",
-          minHeight: "100vh",
         }}
       >
         <Box
           className="menu"
           sx={{
-            transition:
-              "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            position: "relative",
+            overflow: "visible",
+            "& img": {
+              transition: "transform 0.5s ease-in-out",
+            },
+            "&:hover img": {
+              transform: "scale(1.3) rotate(360deg)",
+              zIndex: 2,
+            },
             "&:hover": {
-              transform: "scale(1.3)",
               backgroundColor: "primary.dark",
+              border: "4px solid white",
             },
           }}
         >
-          <img src={folha} />
+          <img src={folha} alt="folha" />
         </Box>
+
         <Box
           className="menu"
           sx={{
             transition:
               "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
             "&:hover": {
-              transform: "scale(1.3)",
+              transform: "scale(1.3) rotate(360deg)",
+              border: "4px solid white",
+
               backgroundColor: "primary.dark",
             },
           }}
         >
           <img src={pagas} />
         </Box>
+
+        <Box
+          className="menu"
+          sx={{
+            transition:
+              "transform 0.3s ease-in-out, background-color 0.3s ease-in-out ",
+            "&:hover": {
+              transform: "translateY(-18px)",
+              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.3)",
+              backgroundColor: "primary.dark",
+            },
+          }}
+        >
+          <img src={pagas} />
+        </Box>
+
         <Box
           className="menu"
           sx={{
@@ -78,6 +106,6 @@ export const Dashboard = ({toggleMode, mode}: DashboardProps) => {
           <img src={apagar} />
         </Box>
       </Container>
-    </>
+    </div>
   );
 };

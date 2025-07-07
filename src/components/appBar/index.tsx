@@ -48,7 +48,7 @@ export const ResponsiveAppBar = ({toggleMode, mode}: AppBarProps) => {
   };
 
   return (
-    <AppBar position="absolute">
+    <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton

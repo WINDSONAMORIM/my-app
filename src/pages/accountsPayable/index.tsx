@@ -3,7 +3,7 @@ import { ResponsiveAppBar } from "../../components/appBar";
 import CustomizedTables from "../../components/table";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState } from "react";
-import { accountsPayable } from "../../services/apiAccountsPayableService";
+import { accountsPayableService } from "../../services/apiAccountsPayableService";
 import type { AccountsPayableDTO } from "../../types/accountsPayableDTO";
 import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
 
@@ -25,7 +25,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
     setFiles(selected);
 
     try {
-      const result = await accountsPayable(selected);
+      const result = await accountsPayableService(selected);
       console.log("API Response:", result);
       if (!result || result.length === 0) {
         console.error("No data returned from the API");
@@ -59,22 +59,24 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   };
 
   return (
-    <div style={{ padding: "10px", backgroundImage: `url(${backgroundDefault})`, backgroundSize: "cover", minHeight: "100vh" }}>
+    <div
+      style={{
+        padding: "10px",
+        backgroundImage: `url(${backgroundDefault})`,
+        backgroundSize: "cover",
+        minHeight: "100vh",
+      }}
+    >
       <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
       <Typography align="center" variant="h5" margin={2}>
         Contas a Pagar
       </Typography>
-      <CustomizedTables rows={rows} />
       <Box
         display={"flex"}
         flexDirection="row"
-        position={"fixed"}
-        bottom={0}
-        left={0}
-        right={0}
         justifyContent="space-around"
         alignItems="center"
-        sx={{padding: "10px" }}
+        sx={{ padding: "10px" }}
       >
         <Box
           sx={{
@@ -131,6 +133,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
           </Button>
         </Box>
       </Box>
+      <CustomizedTables rows={rows} />
     </div>
   );
 };
