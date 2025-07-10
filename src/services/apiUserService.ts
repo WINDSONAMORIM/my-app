@@ -6,7 +6,7 @@ export const login = async (username: string, password: string) => {
             username,
             password,
         });
-        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("Token", response.data.token);
         connection.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
         return response.data;        
     } catch (error) {

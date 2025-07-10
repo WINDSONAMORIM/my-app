@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -12,13 +13,12 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import PersonIcon from "@mui/icons-material/Person";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import React from "react";
 import logo from "../../assets/icon_transparent-removebg-preview.png";
 import hospital from "../../assets/background/hospital.jpg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ping } from "../../services/connection";
 import { login } from "../../services/apiUserService";
 
 export const Login = () => {
@@ -28,10 +28,11 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [errorAlert, setErrorAlert] = useState("");
   const [errorAlertTitle, setErrorAlertTitle] = useState("");
+  const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
-    ping().then(() => console.log("Ping successful"));
-  }, []);
+  const handleVisible = () => {
+    setVisible((prev) => !prev);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,12 +44,10 @@ export const Login = () => {
         setErrorAlertTitle(data.mensage || "Login failed");
         return;
       }
-      
-      console.log("Login successful:", data.data.Token);
-      sessionStorage.setItem("Token", data.data.Token);
-      
-      navigate("/dashboard");
 
+      sessionStorage.setItem("Token", data.data.Token);
+
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -210,7 +209,9 @@ export const Login = () => {
             <Box
               sx={{ display: "flex", alignItems: "flex-end", width: "100%" }}
             >
-              <PersonIcon style={{ marginRight: 8, color: "#000" }} />
+              <IconButton>
+                <PersonIcon style={{ marginRight: 8, color: "#000" }} />
+              </IconButton>
               <TextField
                 fullWidth
                 variant="standard"
@@ -224,12 +225,20 @@ export const Login = () => {
             <Box
               sx={{ display: "flex", alignItems: "flex-end", width: "100%" }}
             >
-              <VisibilityOffIcon style={{ marginRight: 8, color: "#000" }} />
+              <IconButton onClick={handleVisible}>
+                {visible ? (
+                  <VisibilityOffIcon
+                    style={{ marginRight: 8, color: "#000" }}
+                  />
+                ) : (
+                  <VisibilityIcon style={{ marginRight: 8, color: "#000" }} />
+                )}
+              </IconButton>
               <TextField
                 fullWidth
                 variant="standard"
                 label="Senha"
-                type="password"
+                type={visible ? "password" : "text"}
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}

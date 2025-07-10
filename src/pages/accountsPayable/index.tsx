@@ -3,19 +3,28 @@ import { ResponsiveAppBar } from "../../components/appBar";
 import CustomizedTables from "../../components/table";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState } from "react";
-import { accountsPayableService } from "../../services/apiAccountsPayableService";
-import type { AccountsPayableDTO } from "../../types/accountsPayableDTO";
+import {
+  accountsPayableService,
+  accountsPayableServicePreview,
+} from "../../services/apiAccountsPayableService";
+import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
-
+import type { ApiResponseArray } from "../../types/apiResponse";
 
 interface AccountsPayableProps {
   toggleMode: () => void;
   mode: boolean;
 }
 
+type UploadStatus = "idle" | "loading" | "success" | "error";
+
 export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [rows, setRows] = useState<AccountsPayableDTO[]>([]);
+  const [rows, setRows] = useState<AccountsPayablePreviewDTO[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
+  const [uploadResults, setuploadResults] = useState<ApiResponseArray[]>([]);
+
+  console.log(uploadStatus)
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("File input changed:", e.target.files);
@@ -25,7 +34,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
     setFiles(selected);
 
     try {
-      const result = await accountsPayableService(selected);
+      const result = await accountsPayableServicePreview(selected);
       console.log("API Response:", result);
       if (!result || result.length === 0) {
         console.error("No data returned from the API");
@@ -37,25 +46,19 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
     }
   };
 
-  //   const handleSubmit = async() => {
-  //     if (!files?.length) return;
-
-  //     try {
-  //       const result = await accountsPayable(files);
-  //       setRows(result);
-  //     } catch (error) {
-  //       return console.error("Error uploading files:", error);
-  //     }
-  //   }
-
   const handleUpload = async () => {
     if (!files?.length) return;
+    setUploadStatus("loading");
 
-    const form = new FormData();
+    try {
+      const result = await accountsPayableService(files);
+      setuploadResults(result);
+      setUploadStatus("success");
 
-    Array.from(files).forEach((file) => {
-      form.append("files", file);
-    });
+      console.log(result);
+    } catch (error) {
+      return console.error("Error uploading files:", error);
+    }
   };
 
   return (
@@ -133,7 +136,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
           </Button>
         </Box>
       </Box>
-      <CustomizedTables rows={rows} />
+      <CustomizedTables rows={rows} uploadResults={uploadResults} />
     </div>
   );
 };

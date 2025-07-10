@@ -6,7 +6,7 @@ export const connection = axios.create({
 
 connection.interceptors.request.use(
     (config) => {
-        const token = sessionStorage.getItem('token')
+        const token = sessionStorage.getItem('Token')
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }

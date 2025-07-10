@@ -7,9 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import type { AccountsPayableDTO } from "../../types/accountsPayableDTO";
+import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import { TableFooter, TablePagination } from "@mui/material";
-import SyncIcon from "@mui/icons-material/Sync";
+import { StatusIcon } from "../statusIcon";
+import type { ApiResponseArray } from "../../types/apiResponse";
+import type { UploadStatus } from "../../types/uploadStatus";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,8 +36,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+// type UploadStatus = "idle" | "loading" | "success" | "error";
 interface CusttomizeTablesProps {
-  rows: AccountsPayableDTO[];
+  rows: AccountsPayablePreviewDTO[];
+  uploadResults: ApiResponseArray[];
 }
 
 const headers = [
@@ -48,14 +52,26 @@ const headers = [
   "Status"
 ];
 
-export default function CustomizedTables({rows}:CusttomizeTablesProps) {
-  console.log("rows: ",rows)
+export default function CustomizedTables({ rows, uploadResults }: CusttomizeTablesProps) {
+  console.log("rows: ", rows);
+  console.log(
+    "rows: ",
+    rows.map((r) => console.log(r.NFDoc))
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const startIndex = page * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
   const paginatedRows = rows.slice(startIndex, endIndex);
+
+  const getRowStatus = (nfDoc: string): UploadStatus => {
+    const result = uploadResults.find((r) => r.data.includes(nfDoc)); // ou algum outro campo
+    if (!result) return "idle";
+    if (result.statusCode === 200) return "success";
+    return "error";
+  };
+
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -101,12 +117,14 @@ export default function CustomizedTables({rows}:CusttomizeTablesProps) {
           {paginatedRows.map((row, i) => (
             <StyledTableRow key={i}>
               <StyledTableCell align="left">{i + 1}</StyledTableCell>
-              <StyledTableCell align="left">{row.fornecedorId}</StyledTableCell>
-              <StyledTableCell align="left">{row.nFDoc}</StyledTableCell>
-              <StyledTableCell align="left">{row.nFDocSerie}</StyledTableCell>
-              <StyledTableCell align="left">{`R$ ${row.valorTotal}`}</StyledTableCell>
-              <StyledTableCell align="left">{row.dataEmissao}</StyledTableCell>
-              <StyledTableCell align="center">{<SyncIcon />}</StyledTableCell>
+              <StyledTableCell align="left">{row.Fornecedor}</StyledTableCell>
+              <StyledTableCell align="left">{row.NFDoc}</StyledTableCell>
+              <StyledTableCell align="left">{row.NFDocSerie}</StyledTableCell>
+              <StyledTableCell align="left">{`R$ ${row.ValorTotal}`}</StyledTableCell>
+              <StyledTableCell align="left">{row.DataEmissao}</StyledTableCell>
+              <StyledTableCell align="center">
+                {<StatusIcon status={getRowStatus(row.NFDoc)} />}
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
