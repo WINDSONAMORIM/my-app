@@ -9,9 +9,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import { TableFooter, TablePagination } from "@mui/material";
-import { StatusIcon } from "../statusIcon";
-import type { ApiResponseArray } from "../../types/apiResponse";
-import type { UploadStatus } from "../../types/uploadStatus";
+import { StatusIcon, type StatusIconProps } from "../statusIcon";
+import type { UploadResponse } from "../../types/apiResponse";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,10 +35,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// type UploadStatus = "idle" | "loading" | "success" | "error";
 interface CusttomizeTablesProps {
   rows: AccountsPayablePreviewDTO[];
-  uploadResults: ApiResponseArray[];
+  uploadResults: UploadResponse[];
 }
 
 const headers = [
@@ -49,15 +47,13 @@ const headers = [
   "NFDocSerie",
   "ValorTotal",
   "DataEmissao",
-  "Status"
+  "Status",
 ];
 
-export default function CustomizedTables({ rows, uploadResults }: CusttomizeTablesProps) {
-  console.log("rows: ", rows);
-  console.log(
-    "rows: ",
-    rows.map((r) => console.log(r.NFDoc))
-  );
+export default function CustomizedTables({
+  rows,
+  uploadResults,
+}: CusttomizeTablesProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -65,13 +61,14 @@ export default function CustomizedTables({ rows, uploadResults }: CusttomizeTabl
   const endIndex = startIndex + rowsPerPage;
   const paginatedRows = rows.slice(startIndex, endIndex);
 
-  const getRowStatus = (nfDoc: string): UploadStatus => {
-    const result = uploadResults.find((r) => r.data.includes(nfDoc)); // ou algum outro campo
-    if (!result) return "idle";
-    if (result.statusCode === 200) return "success";
-    return "error";
-  };
+  console.log(uploadResults.map((m)=>m.message))
 
+  const getRowStatus = (): StatusIconProps => {
+    const mensage = uploadResults.map((m)=>m.message)
+    if (!uploadResults.length) return {status: "idle", message: "aguardando"};
+    if (uploadResults.some((r)=>r.statusCode !==200)) return {status:"error", message: mensage[0]};
+    return {status: "success",message: mensage[0]};
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -123,7 +120,7 @@ export default function CustomizedTables({ rows, uploadResults }: CusttomizeTabl
               <StyledTableCell align="left">{`R$ ${row.ValorTotal}`}</StyledTableCell>
               <StyledTableCell align="left">{row.DataEmissao}</StyledTableCell>
               <StyledTableCell align="center">
-                {<StatusIcon status={getRowStatus(row.NFDoc)} />}
+                {<StatusIcon {...getRowStatus()} />}
               </StyledTableCell>
             </StyledTableRow>
           ))}

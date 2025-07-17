@@ -1,9 +1,10 @@
+// import axios from "axios";
 import type { AccountsPayablePreviewDTO } from "../types/accountsPayableDTO";
 import { type UploadResponse, type ApiResponse } from "../types/apiResponse";
+
 import { connection } from "./connection";
 
 export const accountsPayableServicePreview = async (files: File[]) => {
-  console.log("Files to upload:", files);
   const form = new FormData();
 
   files.forEach((file) => {
@@ -18,7 +19,6 @@ export const accountsPayableServicePreview = async (files: File[]) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log("data: ", data.data);
     return data.data;
   } catch (error) {
     console.error("Erro no preview de notas:", error);
@@ -26,8 +26,9 @@ export const accountsPayableServicePreview = async (files: File[]) => {
   }
 };
 
-export const accountsPayableService = async (files: File[]) => {
-  console.log("Files to upload:", files);
+export const accountsPayableService = async (
+  files: File[]
+): Promise<UploadResponse> => {
   const form = new FormData();
 
   files.forEach((file) => {
@@ -35,19 +36,34 @@ export const accountsPayableService = async (files: File[]) => {
   });
 
   try {
-    const { data } = await connection.post<UploadResponse>(
-      "/contasPagar",
-      form,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    console.log("data: ", data.data);
-    return data.data;
+    const { data } = await connection.post<
+      UploadResponse | (ApiResponse<null> & { isError: true })
+    >("/contasPagar", form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if ("isError" in data && data.isError) {
+      console.log('IsError')
+      console.log("IsError data.data", data.statusCode);  
+      return {
+        statusCode: data.statusCode,
+        success: false,
+        message: data.message,
+        data: [],
+      };
+    }
+
+    console.log('Fora do IsError data.data',data.data)
+    return {
+      statusCode: data.statusCode,
+      success: true,
+      message: data.message,
+      data: data.data ?? [],
+    };
   } catch (error) {
-    console.error("Erro no Upload de notas:", error);
+    console.error("Error não esperado", error);
     throw error;
   }
 };

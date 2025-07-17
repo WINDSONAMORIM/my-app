@@ -9,7 +9,7 @@ import {
 } from "../../services/apiAccountsPayableService";
 import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
-import type { ApiResponseArray } from "../../types/apiResponse";
+import type { UploadResponse } from "../../types/apiResponse";
 
 interface AccountsPayableProps {
   toggleMode: () => void;
@@ -21,13 +21,10 @@ type UploadStatus = "idle" | "loading" | "success" | "error";
 export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [rows, setRows] = useState<AccountsPayablePreviewDTO[]>([]);
-  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
-  const [uploadResults, setuploadResults] = useState<ApiResponseArray[]>([]);
-
-  console.log(uploadStatus)
+  const [, setUploadStatus] = useState<UploadStatus>("idle");
+  const [uploadResults, setuploadResults] = useState<UploadResponse[]>([]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File input changed:", e.target.files);
     if (!e.target.files) return;
 
     const selected = Array.from(Array.from(e.target.files));
@@ -35,7 +32,6 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
 
     try {
       const result = await accountsPayableServicePreview(selected);
-      console.log("API Response:", result);
       if (!result || result.length === 0) {
         console.error("No data returned from the API");
         return;
@@ -48,16 +44,12 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
 
   const handleUpload = async () => {
     if (!files?.length) return;
-    setUploadStatus("loading");
+    const result = await accountsPayableService(files);
+    console.log("sucess na page:", result);
 
-    try {
-      const result = await accountsPayableService(files);
-      setuploadResults(result);
-      setUploadStatus("success");
-
-      console.log(result);
-    } catch (error) {
-      return console.error("Error uploading files:", error);
+    if (result) {
+      setuploadResults([result]);
+      setUploadStatus(result.success ? "success" : "error");
     }
   };
 
