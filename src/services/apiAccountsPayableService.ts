@@ -1,5 +1,5 @@
-// import axios from "axios";
-import type { AccountsPayablePreviewDTO } from "../types/accountsPayableDTO";
+
+
 import { type UploadResponse, type ApiResponse } from "../types/apiResponse";
 
 import { connection } from "./connection";
@@ -13,7 +13,7 @@ export const accountsPayableServicePreview = async (files: File[]) => {
 
   try {
     const { data } = await connection.post<
-      ApiResponse<AccountsPayablePreviewDTO[]>
+      ApiResponse<null>
     >("/contasPagarPreview", form, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -43,6 +43,7 @@ export const accountsPayableService = async (
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("Api service data: ",data )
 
     if ("isError" in data && data.isError) {
       console.log('IsError')

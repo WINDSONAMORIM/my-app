@@ -2,27 +2,31 @@ import { Box, Button, Typography } from "@mui/material";
 import { ResponsiveAppBar } from "../../components/appBar";
 import CustomizedTables from "../../components/table";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   accountsPayableService,
   accountsPayableServicePreview,
 } from "../../services/apiAccountsPayableService";
-import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
-import type { UploadResponse } from "../../types/apiResponse";
+import type { ApiResponse } from "../../types/apiResponse";
+import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
+import { type StatusIconProps } from "../../components/statusIcon";
 
 interface AccountsPayableProps {
   toggleMode: () => void;
   mode: boolean;
 }
 
-type UploadStatus = "idle" | "loading" | "success" | "error";
-
 export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [rows, setRows] = useState<AccountsPayablePreviewDTO[]>([]);
-  const [, setUploadStatus] = useState<UploadStatus>("idle");
-  const [uploadResults, setuploadResults] = useState<UploadResponse[]>([]);
+  const [rows, setRows] = useState<ApiResponse<AccountsPayablePreviewDTO>[]>(
+    []
+  );
+  const [updateIcons, setUpdateIcons] = useState<StatusIconProps[]>([]);
+
+  useEffect(() => {
+    console.log("Icons updated:", updateIcons);
+  }, [updateIcons]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -32,10 +36,12 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
 
     try {
       const result = await accountsPayableServicePreview(selected);
-      if (!result || result.length === 0) {
+      if (!result) {
         console.error("No data returned from the API");
         return;
       }
+      console.log(result);
+
       setRows(result);
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -45,12 +51,13 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   const handleUpload = async () => {
     if (!files?.length) return;
     const result = await accountsPayableService(files);
-    console.log("sucess na page:", result);
+    
+    const icons: StatusIconProps[] = result.data.map((r) => ({
+      status: r.statusCode >= 400 ? "error" : "success",
+      message: r.data || r.message,
+    }));
 
-    if (result) {
-      setuploadResults([result]);
-      setUploadStatus(result.success ? "success" : "error");
-    }
+    setUpdateIcons(icons);
   };
 
   return (
@@ -128,7 +135,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
           </Button>
         </Box>
       </Box>
-      <CustomizedTables rows={rows} uploadResults={uploadResults} />
+      <CustomizedTables rows={rows} icons={updateIcons}/>
     </div>
   );
 };

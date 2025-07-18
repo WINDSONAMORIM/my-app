@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,10 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import { TableFooter, TablePagination } from "@mui/material";
 import { StatusIcon, type StatusIconProps } from "../statusIcon";
-import type { UploadResponse } from "../../types/apiResponse";
+import type { ApiResponse } from "../../types/apiResponse";
+import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -26,7 +26,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -36,8 +35,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 interface CusttomizeTablesProps {
-  rows: AccountsPayablePreviewDTO[];
-  uploadResults: UploadResponse[];
+  rows: ApiResponse<AccountsPayablePreviewDTO>[];
+  icons: StatusIconProps[];
 }
 
 const headers = [
@@ -52,22 +51,55 @@ const headers = [
 
 export default function CustomizedTables({
   rows,
-  uploadResults,
+  icons,
 }: CusttomizeTablesProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [, setTableKey] = useState(0);
+
+  // useEffect para forçar re-render quando os ícones mudarem
+  useEffect(() => {
+    console.log("Icons changed in table:", icons);
+    setTableKey((prev) => prev + 1);
+  }, [icons]);
 
   const startIndex = page * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
   const paginatedRows = rows.slice(startIndex, endIndex);
 
-  console.log(uploadResults.map((m)=>m.message))
+  const getRowStatus = (
+    row: ApiResponse<AccountsPayablePreviewDTO>,
+    key: number
+  ): StatusIconProps => {
+    console.log(
+      `Getting status for row ${key}, icons length: ${icons.length}`
+    );
+    if (icons.length > 0 && icons[key]) {
+      console.log(`Using icon for row ${key}:`, icons[key]);
+      return {
+        status: icons[key].status,
+        message: icons[key].message,
+      };
+    }
 
-  const getRowStatus = (): StatusIconProps => {
-    const mensage = uploadResults.map((m)=>m.message)
-    if (!uploadResults.length) return {status: "idle", message: "aguardando"};
-    if (uploadResults.some((r)=>r.statusCode !==200)) return {status:"error", message: mensage[0]};
-    return {status: "success",message: mensage[0]};
+    switch (row.statusCode) {
+      case 200:
+        return {
+          status: "success",
+          message: row.message,
+        };
+      case 400:
+        return {
+          status: "error",
+          message: row.message,
+        };
+      default:
+        return {
+          status: "idle",
+          message: "aguardando",
+        };
+    }
   };
 
   const handleChangePage = (
@@ -114,13 +146,19 @@ export default function CustomizedTables({
           {paginatedRows.map((row, i) => (
             <StyledTableRow key={i}>
               <StyledTableCell align="left">{i + 1}</StyledTableCell>
-              <StyledTableCell align="left">{row.Fornecedor}</StyledTableCell>
-              <StyledTableCell align="left">{row.NFDoc}</StyledTableCell>
-              <StyledTableCell align="left">{row.NFDocSerie}</StyledTableCell>
-              <StyledTableCell align="left">{`R$ ${row.ValorTotal}`}</StyledTableCell>
-              <StyledTableCell align="left">{row.DataEmissao}</StyledTableCell>
+              <StyledTableCell align="left">
+                {row.data.Fornecedor}
+              </StyledTableCell>
+              <StyledTableCell align="left">{row.data.NFDoc}</StyledTableCell>
+              <StyledTableCell align="left">
+                {row.data.NFDocSerie}
+              </StyledTableCell>
+              <StyledTableCell align="left">{`R$ ${row.data.ValorTotal}`}</StyledTableCell>
+              <StyledTableCell align="left">
+                {row.data.DataEmissao}
+              </StyledTableCell>
               <StyledTableCell align="center">
-                {<StatusIcon {...getRowStatus()} />}
+                <StatusIcon {...getRowStatus(row, i)} />
               </StyledTableCell>
             </StyledTableRow>
           ))}

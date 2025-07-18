@@ -24,15 +24,7 @@ const SpinningIcon = styled(SyncIcon)(() => ({
   animation: `${icon} 1s linear infinite`,
 }));
 
-// const statusMessages: Record<UploadStatus, string> = {
-//   idle: "Aguardando envio",
-//   loading: "Enviando...",
-//   success: "Enviado com sucesso",
-//   error: "Erro ao enviar",
-// };
-
 export const StatusIcon: React.FC<StatusIconProps> = ({ status, message }) => {
-  // const message = statusMessages[status];
   const getIcon = () => {
     switch (status) {
       case "loading":

@@ -13,14 +13,6 @@ export interface ApiResponseArray {
 }
 
 export type UploadResponse = ApiResponse<ApiResponseArray[]>; 
-// export interface UploadResponse <T>{
-//   statusCode: number;
-//   success: boolean;
-//   message: string;
-//   data: T[];
-// }
-
-
 export interface ExpectedErrorResponse {
   isError: true;
   data: {
