@@ -1,10 +1,10 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import pagas from "../../assets/buttons/ContasPagas.png";
 import apagar from "../../assets/buttons/ContasAPagar.png";
 import folha from "../../assets/buttons/Folha.png";
 
 import "./style.css";
-import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
+// import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
 import { ResponsiveAppBar } from "../../components/appBar";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,8 @@ export const Dashboard = ({ toggleMode, mode }: DashboardProps) => {
     <div
       style={{
         padding: "10px",
-        backgroundImage: `url(${backgroundDefault})`,
+        backgroundImage: "linear-gradient(to top, #000428, #004e92)",
+        // backgroundImage: `url(${backgroundDefault})`,
         backgroundSize: "cover",
         minHeight: "100vh",
       }}
@@ -38,65 +39,167 @@ export const Dashboard = ({ toggleMode, mode }: DashboardProps) => {
         <Box
           className="menu"
           sx={{
+            display: "flex",
+            flexDirection: "column",
             position: "relative",
             overflow: "visible",
             "& img": {
               transition: "transform 0.5s ease-in-out",
             },
             "&:hover img": {
-              transform: "scale(1.3) rotate(360deg)",
+              transform: "scale(1.3) ",
+              opacity: 0.5,
               zIndex: 2,
             },
             "&:hover": {
+              transform: "translateY(-10px)",
+              transition:
+                "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
               backgroundColor: "primary.dark",
               border: "4px solid white",
+            },
+            "& .hoverText": {
+              display: "none",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              color: "white",
+              fontWeight: "bold",
+            },
+            "&:hover .hoverText": {
+              display: "block",
+              zIndex: 3,
+              color: "primary.contrastText",
+              fontWeight: "bold",
             },
           }}
         >
           <img src={folha} alt="folha" />
+          <Typography className={"hoverText"}>RH</Typography>
         </Box>
 
         <Box
           className="menu"
           sx={{
-            transition:
-              "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            overflow: "visible",
+            "& img": {
+              transition: "transform 0.5s ease-in-out",
+            },
+            "&:hover img": {
+              transform: "scale(1.3) ",
+              opacity: 0.5,
+              zIndex: 2,
+            },
             "&:hover": {
-              transform: "scale(1.3) rotate(360deg)",
+              transform: "translateY(-10px)",
+              transition:
+                "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+              backgroundColor: "primary.dark",
               border: "4px solid white",
-
-              backgroundColor: "primary.dark",
+            },
+            "& .hoverText": {
+              display: "none",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              color: "white",
+              fontWeight: "bold",
+            },
+            "&:hover .hoverText": {
+              display: "block",
+              zIndex: 3,
+              color: "primary.contrastText",
+              fontWeight: "bold",
             },
           }}
         >
           <img src={pagas} />
+          <Typography className={"hoverText"}>
+            Documentos Financeiros
+          </Typography>
         </Box>
 
         <Box
           className="menu"
           sx={{
-            transition:
-              "transform 0.3s ease-in-out, background-color 0.3s ease-in-out ",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            overflow: "visible",
+            "& img": {
+              transition: "transform 0.5s ease-in-out",
+            },
+            "&:hover img": {
+              transform: "scale(1.3) ",
+              opacity: 0.5,
+              zIndex: 2,
+            },
             "&:hover": {
-              transform: "translateY(-18px)",
-              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.3)",
+              transform: "translateY(-10px)",
+              transition:
+                "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
               backgroundColor: "primary.dark",
+              border: "4px solid white",
+            },
+            "& .hoverText": {
+              display: "none",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              color: "white",
+              fontWeight: "bold",
+            },
+            "&:hover .hoverText": {
+              display: "block",
+              zIndex: 3,
+              color: "primary.contrastText",
+              fontWeight: "bold",
             },
           }}
         >
           <img src={pagas} />
+          <Typography className={"hoverText"}>test</Typography>
         </Box>
 
         <Box
           className="menu"
           sx={{
-            transition:
-              "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
-            "&:hover": {
-              transform: "scale(1.3)",
-              backgroundColor: "primary.dark",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            overflow: "visible",
+            "& img": {
+              transition: "transform 0.5s ease-in-out",
             },
-            cursor: "pointer",
+            "&:hover img": {
+              transform: "scale(1.3) ",
+              opacity: 0.5,
+              zIndex: 2,
+            },
+            "&:hover": {
+              transform: "translateY(-10px)",
+              transition:
+                "transform 0.3s ease-in-out, background-color 0.3s ease-in-out",
+              backgroundColor: "primary.dark",
+              border: "4px solid white",
+            },
+            "& .hoverText": {
+              display: "none",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              color: "white",
+              fontWeight: "bold",
+            },
+            "&:hover .hoverText": {
+              display: "block",
+              zIndex: 3,
+              color: "primary.contrastText",
+              fontWeight: "bold",
+            },
           }}
           onClick={() => {
             console.log("Acessando contas a pagar");
@@ -104,6 +207,7 @@ export const Dashboard = ({ toggleMode, mode }: DashboardProps) => {
           }}
         >
           <img src={apagar} />
+          <Typography className={"hoverText"}>Contas a Pagar</Typography>
         </Box>
       </Container>
     </div>

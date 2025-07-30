@@ -7,7 +7,7 @@ import {
   accountsPayableService,
   accountsPayableServicePreview,
 } from "../../services/apiAccountsPayableService";
-import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
+// import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
 import type { ApiResponse } from "../../types/apiResponse";
 import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import { type StatusIconProps } from "../../components/statusIcon";
@@ -18,15 +18,14 @@ interface AccountsPayableProps {
 }
 
 export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
-  const [files, setFiles] = useState<File[]>([]);
+  const [, setFiles] = useState<File[]>([]);
   const [rows, setRows] = useState<ApiResponse<AccountsPayablePreviewDTO>[]>(
     []
   );
   const [updateIcons, setUpdateIcons] = useState<StatusIconProps[]>([]);
+  const [disableSend, setDisableSend] = useState<boolean>(true);
 
-  useEffect(() => {
-    console.log("Icons updated:", updateIcons);
-  }, [updateIcons]);
+  useEffect(() => {}, [updateIcons]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -40,7 +39,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
         console.error("No data returned from the API");
         return;
       }
-      console.log(result);
+      setDisableSend(result.some(status=> status.statusCode === 400))
 
       setRows(result);
     } catch (error) {
@@ -49,9 +48,11 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   };
 
   const handleUpload = async () => {
-    if (!files?.length) return;
-    const result = await accountsPayableService(files);
-    
+    console.log("Clicked Send")
+    // if (!files?.length) return;
+    const result = await accountsPayableService();
+    console.log("Result from accounts payable service:", result);
+
     const icons: StatusIconProps[] = result.data.map((r) => ({
       status: r.statusCode >= 400 ? "error" : "success",
       message: r.data || r.message,
@@ -64,7 +65,8 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
     <div
       style={{
         padding: "10px",
-        backgroundImage: `url(${backgroundDefault})`,
+        backgroundImage: "linear-gradient(to top, #000428, #004e92)",
+        // backgroundImage: `url(${backgroundDefault})`,
         backgroundSize: "cover",
         minHeight: "100vh",
       }}
@@ -122,6 +124,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
         >
           <Button
             onClick={handleUpload}
+            disabled={disableSend}
             variant="contained"
             color="primary"
             sx={{
@@ -135,7 +138,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
           </Button>
         </Box>
       </Box>
-      <CustomizedTables rows={rows} icons={updateIcons}/>
+      <CustomizedTables rows={rows} icons={updateIcons} />
     </div>
   );
 };

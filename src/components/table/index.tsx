@@ -58,9 +58,7 @@ export default function CustomizedTables({
 
   const [, setTableKey] = useState(0);
 
-  // useEffect para forçar re-render quando os ícones mudarem
   useEffect(() => {
-    console.log("Icons changed in table:", icons);
     setTableKey((prev) => prev + 1);
   }, [icons]);
 
@@ -72,11 +70,8 @@ export default function CustomizedTables({
     row: ApiResponse<AccountsPayablePreviewDTO>,
     key: number
   ): StatusIconProps => {
-    console.log(
-      `Getting status for row ${key}, icons length: ${icons.length}`
-    );
+
     if (icons.length > 0 && icons[key]) {
-      console.log(`Using icon for row ${key}:`, icons[key]);
       return {
         status: icons[key].status,
         message: icons[key].message,
