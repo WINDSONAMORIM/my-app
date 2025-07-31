@@ -8,6 +8,7 @@ import {
   accountsPayableServicePreview,
 } from "../../services/apiAccountsPayableService";
 // import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
+import backgroundDefault from "../../assets/background/iPhone 6_6S Wallpaper.jpg";
 import type { ApiResponse } from "../../types/apiResponse";
 import type { AccountsPayablePreviewDTO } from "../../types/accountsPayableDTO";
 import { type StatusIconProps } from "../../components/statusIcon";
@@ -39,7 +40,7 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
         console.error("No data returned from the API");
         return;
       }
-      setDisableSend(result.some(status=> status.statusCode === 400))
+      setDisableSend(result.some((status) => status.statusCode === 400));
 
       setRows(result);
     } catch (error) {
@@ -48,13 +49,12 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
   };
 
   const handleUpload = async () => {
-    console.log("Clicked Send")
-    // if (!files?.length) return;
+    console.log("Clicked Send");
     const result = await accountsPayableService();
     console.log("Result from accounts payable service:", result);
 
     const icons: StatusIconProps[] = result.data.map((r) => ({
-      status: r.statusCode >= 400 ? "error" : "success",
+      status: r.statusCode >= 400 ? "error" : "upload",
       message: r.data || r.message,
     }));
 
@@ -65,14 +65,15 @@ export const AccountsPayable = ({ toggleMode, mode }: AccountsPayableProps) => {
     <div
       style={{
         padding: "10px",
-        backgroundImage: "linear-gradient(to top, #000428, #004e92)",
-        // backgroundImage: `url(${backgroundDefault})`,
+        backgroundImage: `url(${backgroundDefault})`,
         backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         minHeight: "100vh",
       }}
     >
       <ResponsiveAppBar toggleMode={toggleMode} mode={mode} />
-      <Typography align="center" variant="h5" margin={2}>
+      <Typography align="center" variant="h5" margin={2} color="white">
         Contas a Pagar
       </Typography>
       <Box

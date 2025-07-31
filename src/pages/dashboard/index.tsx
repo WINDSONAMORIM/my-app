@@ -5,6 +5,7 @@ import folha from "../../assets/buttons/Folha.png";
 
 import "./style.css";
 // import backgroundDefault from "../../assets/background/backgroundDefault.jpg";
+import backgroundDefault from "../../assets/background/iPhone 6_6S Wallpaper.jpg";
 import { ResponsiveAppBar } from "../../components/appBar";
 import { useNavigate } from "react-router-dom";
 
@@ -19,9 +20,11 @@ export const Dashboard = ({ toggleMode, mode }: DashboardProps) => {
     <div
       style={{
         padding: "10px",
-        backgroundImage: "linear-gradient(to top, #000428, #004e92)",
-        // backgroundImage: `url(${backgroundDefault})`,
+        // backgroundImage: "linear-gradient(to top, #000428, #004e92)",
+        backgroundImage: `url(${backgroundDefault})`,
         backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         minHeight: "100vh",
       }}
     >
